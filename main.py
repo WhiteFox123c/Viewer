@@ -8,7 +8,7 @@ from gui import MainWindow
 
 app = QtWidgets.QApplication([])  # Создание объекта нового приложения
 
-file = QFile("stylesheet.qss")  # Объект предостовляющий интерфейс для работы с файлом
+file = QFile("theme/stylesheet.qss")  # Объект предостовляющий интерфейс для работы с файлом
 file.open(QFile.ReadOnly | QFile.Text)  # Открытие файла
 stream = QTextStream(file)  # Создал объект потока файла
 app.setStyleSheet(stream.readAll())  # Указание таблицы стилей
