@@ -21,6 +21,7 @@ class MainWindow(QtWidgets.QMainWindow):
         else:
             self.__ask_for_path()
 
+    # TODO: Real checking...
     def __is_saved_path(self):
         return False
 
