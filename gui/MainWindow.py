@@ -28,6 +28,7 @@ class MainWindow(QtWidgets.QMainWindow):
     def __ask_for_path(self):
         dialog = LibraryChoose.LibraryChoose(self)
         dialog_result = dialog.exec_()
+
         if dialog_result == QtWidgets.QDialog.DialogCode.Accepted:
             print(dialog.get_path())
         elif dialog_result == QtWidgets.QDialog.DialogCode.Rejected:
