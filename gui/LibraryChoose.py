@@ -1,4 +1,6 @@
-from PyQt5 import QtWidgets
+import os
+
+from PyQt6 import QtWidgets
 
 from tkinter import filedialog
 
@@ -13,12 +15,18 @@ class LibraryChoose(QtWidgets.QDialog):
         self.__register_handlers()
 
     def __register_handlers(self):
-        self.ui.pushButton.clicked.connect(self.__action_choose_library_button_handler)
-        self.ui.buttonBox.accepted.connect(lambda: self.setResult(QtWidgets.QDialog.DialogCode.Accepted))
-        self.ui.buttonBox.rejected.connect(lambda: self.setResult(QtWidgets.QDialog.DialogCode.Rejected))
+        self.ui.chooseButton.clicked.connect(self.__action_choose_library_button_handler)
+        self.ui.okButton.clicked.connect(self.__path_check)
 
     def __action_choose_library_button_handler(self):
         self.ui.lineEdit.setText(filedialog.askdirectory())
 
     def get_path(self):
         return self.ui.lineEdit.text()
+
+    def __path_check(self):
+        if os.path.exists(self.get_path()):
+            self.setResult(QtWidgets.QDialog.DialogCode.Accepted)
+            self.close()
+        else:
+            self.ui.lineEdit.setPlaceholderText("Ты долбоеб!")
