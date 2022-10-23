@@ -1,8 +1,9 @@
-from PyQt6 import QtWidgets
+from xmlrpc.client import Boolean
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtCore import pyqtSlot
 
 from GUI.Ui_MainWindow import Ui_MainWindow
+from screens.LibraryChooseDialog import LibraryChooseDialog
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     """ Main application window
@@ -18,13 +19,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__(parent)
         self.setupUi(self)
 
-    @pyqtSlot()
-    def on_actionOpen_triggered(self) -> None:
+        if not self.__is_saved_dir_path():
+            self.__open_ask_dir_path_modal()
+        else:
+            pass
+
+    def __is_saved_dir_path(self) -> Boolean:
+        """ Checks if there is saved dir path
+
+        Returns true if dir path is saved from previos launch or not
+        """
+        return False
+
+    @pyqtSlot(name='on_actionOpen_triggered')
+    def __open_ask_dir_path_modal(self) -> None:
         """ Slot for actionOpen on triggered
 
-        Ask user to select a folder with target files
+        Open a modal window to ask user for folder path
         """
-        dialog = QtWidgets.QFileDialog(self)
-        dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
-        dialog.setOption(QtWidgets.QFileDialog.Option.ShowDirsOnly)
+        dialog = LibraryChooseDialog(self)
         dialog.exec()

@@ -40,10 +40,9 @@ class Ui_LibraryChooseDialog(object):
         self.browse.setObjectName("browse")
         self.horizontalLayout.addWidget(self.browse)
         self.windowLayout.addLayout(self.horizontalLayout)
-        self.buttonBox = QtWidgets.QDialogButtonBox(LibraryChooseDialog)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.StandardButton.Apply)
-        self.buttonBox.setObjectName("buttonBox")
-        self.windowLayout.addWidget(self.buttonBox)
+        self.applyButton = QtWidgets.QPushButton(LibraryChooseDialog)
+        self.applyButton.setObjectName("applyButton")
+        self.windowLayout.addWidget(self.applyButton)
         self.verticalLayout.addLayout(self.windowLayout)
 
         self.retranslateUi(LibraryChooseDialog)
@@ -54,3 +53,4 @@ class Ui_LibraryChooseDialog(object):
         LibraryChooseDialog.setWindowTitle(_translate("LibraryChooseDialog", "Выберите галерею"))
         self.selectedPath.setPlaceholderText(_translate("LibraryChooseDialog", "Путь к папке..."))
         self.browse.setText(_translate("LibraryChooseDialog", "Выбрать"))
+        self.applyButton.setText(_translate("LibraryChooseDialog", "Принять"))

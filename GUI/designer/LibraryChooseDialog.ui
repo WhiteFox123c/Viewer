@@ -89,9 +89,9 @@
       </layout>
      </item>
      <item>
-      <widget class="QDialogButtonBox" name="buttonBox">
-       <property name="standardButtons">
-        <set>QDialogButtonBox::Apply</set>
+      <widget class="QPushButton" name="applyButton">
+       <property name="text">
+        <string>Принять</string>
        </property>
       </widget>
      </item>
