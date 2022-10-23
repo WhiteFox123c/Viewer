@@ -1,6 +1,6 @@
 import sys
 
-import resources.theme.resources
+import resources.themes.themes
 
 from PyQt6.QtCore import QFile, QTextStream
 from PyQt6.QtWidgets import QApplication
