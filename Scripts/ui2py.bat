@@ -1,6 +1,6 @@
 @echo off
 
-set uiFilename=$1
+set uiFilename=%1
 set uiFilepath=GUI/designer
 set pyFilepath=GUI
 set pyFilePreffix=Ui
