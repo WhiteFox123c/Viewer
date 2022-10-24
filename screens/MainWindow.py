@@ -1,4 +1,3 @@
-from xmlrpc.client import Boolean
 from PyQt6.QtWidgets import QMainWindow
 from PyQt6.QtCore import pyqtSlot
 
@@ -24,7 +23,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             pass
 
-    def __is_saved_dir_path(self) -> Boolean:
+    def __is_saved_dir_path(self) -> bool:
         """ Checks if there is saved dir path
 
         Returns true if dir path is saved from previos launch or not
