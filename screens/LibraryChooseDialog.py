@@ -19,16 +19,16 @@ class LibraryChooseDialog(QDialog, Ui_LibraryChooseDialog):
         self.setupUi(self)
 
     @pyqtSlot()
-    def on_browse_clicked(self) -> None:
+    def on_BrowseButton_clicked(self) -> None:
         dialog = QtWidgets.QFileDialog(self)
         dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
         dialog.setOption(QtWidgets.QFileDialog.Option.ShowDirsOnly)
         dialog.exec()
 
-        self.selected_dir_path = dialog.selectedFiles()[0]
-        self.selectedPath.setText(self.selected_dir_path)
+        self.directory_path = dialog.selectedFiles()[0]
+        self.SelectedPathLineEdit.setText(self.directory_path)
 
     @pyqtSlot()
-    def on_applyButton_clicked(self) -> None:
+    def on_ApplyButton_clicked(self) -> None:
         self.setResult(QtWidgets.QDialog.DialogCode.Accepted)
         self.close()

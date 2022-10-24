@@ -13,25 +13,13 @@
     <height>105</height>
    </rect>
   </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>0</width>
-    <height>0</height>
-   </size>
-  </property>
   <property name="windowTitle">
    <string>Выберите галерею</string>
   </property>
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
+  <layout class="QVBoxLayout" name="LibraryChooseDialogLayout">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -48,54 +36,64 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QVBoxLayout" name="windowLayout" stretch="0,0">
-     <property name="spacing">
-      <number>10</number>
-     </property>
-     <property name="sizeConstraint">
-      <enum>QLayout::SetDefaultConstraint</enum>
-     </property>
-     <property name="leftMargin">
-      <number>15</number>
-     </property>
-     <property name="topMargin">
-      <number>15</number>
-     </property>
-     <property name="rightMargin">
-      <number>15</number>
-     </property>
-     <property name="bottomMargin">
-      <number>15</number>
-     </property>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <property name="spacing">
-        <number>5</number>
-       </property>
-       <item>
-        <widget class="QLineEdit" name="selectedPath">
-         <property name="placeholderText">
-          <string>Путь к папке...</string>
+    <widget class="QWidget" name="ContainerWidget" native="true">
+     <layout class="QVBoxLayout" name="ContainerWidgetLayout">
+      <property name="spacing">
+       <number>10</number>
+      </property>
+      <property name="leftMargin">
+       <number>15</number>
+      </property>
+      <property name="topMargin">
+       <number>15</number>
+      </property>
+      <property name="rightMargin">
+       <number>15</number>
+      </property>
+      <property name="bottomMargin">
+       <number>15</number>
+      </property>
+      <item>
+       <widget class="QWidget" name="SelectControlsWidget" native="true">
+        <layout class="QHBoxLayout" name="SelectControlsWidgetLayout">
+         <property name="leftMargin">
+          <number>0</number>
          </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="browse">
-         <property name="text">
-          <string>Выбрать</string>
+         <property name="topMargin">
+          <number>0</number>
          </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QPushButton" name="applyButton">
-       <property name="text">
-        <string>Принять</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLineEdit" name="SelectedPathLineEdit">
+           <property name="placeholderText">
+            <string>Путь к папке...</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="BrowseButton">
+           <property name="text">
+            <string>Выбрать</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="ApplyButton">
+        <property name="text">
+         <string>Принять</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

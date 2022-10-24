@@ -30,7 +30,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         return False
 
-    @pyqtSlot(name='on_actionOpen_triggered')
+    @pyqtSlot(name='on_OpenAction_triggered')
     def __open_ask_dir_path_modal(self) -> None:
         """ Slot for actionOpen on triggered
 
