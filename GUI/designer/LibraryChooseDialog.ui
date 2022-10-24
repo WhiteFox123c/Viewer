@@ -14,7 +14,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Выберите галерею</string>
+   <string>Choose a gallery folder</string>
   </property>
   <property name="modal">
    <bool>true</bool>
@@ -71,14 +71,14 @@
          <item>
           <widget class="QLineEdit" name="SelectedPathLineEdit">
            <property name="placeholderText">
-            <string>Путь к папке...</string>
+            <string>Gallery path</string>
            </property>
           </widget>
          </item>
          <item>
           <widget class="QPushButton" name="BrowseButton">
            <property name="text">
-            <string>Выбрать</string>
+            <string>Browse...</string>
            </property>
           </widget>
          </item>
@@ -88,7 +88,7 @@
       <item>
        <widget class="QPushButton" name="ApplyButton">
         <property name="text">
-         <string>Принять</string>
+         <string>Apply</string>
         </property>
        </widget>
       </item>

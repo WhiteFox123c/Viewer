@@ -81,8 +81,8 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Hello world"))
-        self.FileInfoGroupBox.setTitle(_translate("MainWindow", "Информация о файле"))
-        self.TitleFileNameLabel.setText(_translate("MainWindow", "Имя файла:"))
-        self.FileMenu.setTitle(_translate("MainWindow", " Файл"))
-        self.OpenAction.setText(_translate("MainWindow", "Открыть"))
+        MainWindow.setWindowTitle(_translate("MainWindow", ""))
+        self.FileInfoGroupBox.setTitle(_translate("MainWindow", "File info"))
+        self.TitleFileNameLabel.setText(_translate("MainWindow", "Filename:"))
+        self.FileMenu.setTitle(_translate("MainWindow", "File"))
+        self.OpenAction.setText(_translate("MainWindow", "Open"))

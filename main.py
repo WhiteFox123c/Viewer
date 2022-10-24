@@ -10,12 +10,6 @@ from screens.MainWindow import MainWindow
 
 
 def start_application() -> None:
-    """ Starts the aplication
-
-    Create main window, set a theme according to OS theme
-    and open it
-    """
-
     app = QApplication(sys.argv)
 
     file = QFile(':/theme/{}/stylesheet.qss'

@@ -5,30 +5,32 @@ from PyQt6.QtCore import pyqtSlot
 from GUI.Ui_LibraryChooseDialog import Ui_LibraryChooseDialog
 
 class LibraryChooseDialog(QDialog, Ui_LibraryChooseDialog):
-    """ Modal window
+    """Dialog window to asking user for gallery path"""
 
-    Window for ask to select a folder with target files
-    """
+    directory_path: str = ''
 
     def __init__(self, parent=None) -> None:
-        """ Initialize a window
-
-        Setup ui objects and window settings
-        """
+        """Setup UI objects and window settings"""
         super().__init__(parent)
         self.setupUi(self)
 
-    @pyqtSlot()
-    def on_BrowseButton_clicked(self) -> None:
+        self.SelectedPathLineEdit.textChanged.connect(self.__SelectedPathLineEdit_changed)
+
+    def __SelectedPathLineEdit_changed(self, text: str):
+        """Save directory path from LineEdit into"""
+        self.directory_path = text
+
+    @pyqtSlot(name='on_BrowseButton_clicked')
+    def __BrowseButton_clicked(self) -> None:
+        """Open OS's file browse dialog and handle its result"""
         dialog = QtWidgets.QFileDialog(self)
         dialog.setFileMode(QtWidgets.QFileDialog.FileMode.Directory)
         dialog.setOption(QtWidgets.QFileDialog.Option.ShowDirsOnly)
         dialog.exec()
 
-        self.directory_path = dialog.selectedFiles()[0]
-        self.SelectedPathLineEdit.setText(self.directory_path)
+        self.SelectedPathLineEdit.setText(dialog.selectedFiles()[0])
 
-    @pyqtSlot()
-    def on_ApplyButton_clicked(self) -> None:
-        self.setResult(QtWidgets.QDialog.DialogCode.Accepted)
-        self.close()
+    @pyqtSlot(name='on_ApplyButton_clicked')
+    def __ApplyButton_clicked(self) -> None:
+        """Accept selected path and close the dialog"""
+        self.accept()

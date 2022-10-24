@@ -47,7 +47,7 @@ class Ui_LibraryChooseDialog(object):
 
     def retranslateUi(self, LibraryChooseDialog):
         _translate = QtCore.QCoreApplication.translate
-        LibraryChooseDialog.setWindowTitle(_translate("LibraryChooseDialog", "Выберите галерею"))
-        self.SelectedPathLineEdit.setPlaceholderText(_translate("LibraryChooseDialog", "Путь к папке..."))
-        self.BrowseButton.setText(_translate("LibraryChooseDialog", "Выбрать"))
-        self.ApplyButton.setText(_translate("LibraryChooseDialog", "Принять"))
+        LibraryChooseDialog.setWindowTitle(_translate("LibraryChooseDialog", "Choose a gallery folder"))
+        self.SelectedPathLineEdit.setPlaceholderText(_translate("LibraryChooseDialog", "Gallery path"))
+        self.BrowseButton.setText(_translate("LibraryChooseDialog", "Browse..."))
+        self.ApplyButton.setText(_translate("LibraryChooseDialog", "Apply"))
