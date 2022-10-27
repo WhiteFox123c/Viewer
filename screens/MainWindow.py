@@ -25,7 +25,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().show()
 
         if not self.__is_saved_dir_path():
-            self.__open_ask_gallery_path_dialog()
+            dialog_result = self.__open_ask_gallery_path_dialog()
+            if dialog_result['accepted'] == True:
+                self.__open_path(dialog_result['path'])
         else:
             # TODO: Open saved gallery path...
             print('Open saved gallery folder path')
@@ -35,13 +37,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         return False
 
     @pyqtSlot(name='on_OpenAction_triggered')
-    def __open_ask_gallery_path_dialog(self) -> None:
+    def __openAction_triggered(self):
+        dialog_result = self.__open_ask_gallery_path_dialog()
+        if dialog_result['accepted'] == True:
+            self.__open_path(dialog_result['path'])
+
+    def __open_ask_gallery_path_dialog(self) -> dict:
         """Ask user to select a gallery path"""
         dialog = LibraryChooseDialog(self)
         dialog.exec()
 
-        if dialog.result() == LibraryChooseDialog.DialogCode.Accepted:
-            self.__open_path(dialog.directory_path)
+        return {
+            'accepted': dialog.result() == LibraryChooseDialog.DialogCode.Accepted,
+            'path': dialog.directory_path
+        }
 
     def __set_directory_path(self, directory_path) -> None:
         """Set directory path and window title according to it
@@ -51,14 +60,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.directory_path = directory_path
         self.setWindowTitle(self.DEFAULT_WINDOW_TITLE if directory_path == None else directory_path)
 
-    def __close_current_gallery(self) -> None:
-        """Reset gallery path"""
-        self.__set_directory_path(None)
-
     def __open_path(self, directory_path: str) -> None:
         """Open provided gallery path"""
         if (os.path.isdir(directory_path)):
-            self.__close_current_gallery()
             self.__set_directory_path(directory_path)
         else:
             message_box = QMessageBox(self)
@@ -66,5 +70,3 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             message_box.setText(f'The gallery folder you specified does not look like a real existing folder\n\n{directory_path}')
             message_box.setIcon(QMessageBox.Icon.Critical)
             message_box.exec()
-
-            self.__open_ask_gallery_path_dialog()
