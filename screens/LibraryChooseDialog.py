@@ -2,6 +2,7 @@ from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QDialog
 from PyQt6.QtCore import pyqtSlot
 
+
 from GUI.Ui_LibraryChooseDialog import Ui_LibraryChooseDialog
 
 class LibraryChooseDialog(QDialog, Ui_LibraryChooseDialog):
@@ -14,9 +15,8 @@ class LibraryChooseDialog(QDialog, Ui_LibraryChooseDialog):
         super().__init__(parent)
         self.setupUi(self)
 
-        self.SelectedPathLineEdit.textChanged.connect(self.__SelectedPathLineEdit_changed)
-
-    def __SelectedPathLineEdit_changed(self, text: str):
+    @pyqtSlot(str, name='on_SelectedPathLineEdit_textChanged')
+    def __SelectedPathLineEdit_changed(self, text: str) -> None:
         """Save directory path from LineEdit into"""
         self.directory_path = text
 
