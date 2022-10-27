@@ -9,7 +9,7 @@ import darkdetect
 from screens.MainWindow import MainWindow
 
 
-def set_theme(app: QApplication):
+def set_theme(app: QApplication) -> None:
     file = QFile(':/theme/{}/stylesheet.qss'
             .format('dark' if darkdetect.isDark() else 'light'))
     file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text)
