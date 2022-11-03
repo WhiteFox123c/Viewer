@@ -7,4 +7,7 @@ else
     python -m venv venv
 fi
 
+chmod +x ./venv/bin/activate
+./venv/bin/activate
+
 pip install -r requirements.txt

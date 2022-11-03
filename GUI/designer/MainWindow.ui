@@ -6,43 +6,119 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>420</height>
+    <width>550</width>
+    <height>440</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Hello world</string>
+   <string></string>
   </property>
-  <property name="toolButtonStyle">
-   <enum>Qt::ToolButtonIconOnly</enum>
-  </property>
-  <property name="documentMode">
-   <bool>false</bool>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QWidget" name="CentralContentWidget">
+   <layout class="QHBoxLayout" name="CentralContentWidgetLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QWidget" name="LeftColumnWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>1</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="RightColumnWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>1</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="RightColumnWidgetLayout">
+       <item>
+        <widget class="QGraphicsView" name="FilePreviewGraphicsView">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="FileInfoGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>File info</string>
+         </property>
+         <layout class="QFormLayout" name="FileInfoGroupBoxLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="TitleFileNameLabel">
+            <property name="text">
+             <string>Filename:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="FileNameLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="MenuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>575</width>
-     <height>22</height>
+     <width>550</width>
+     <height>21</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
+   <widget class="QMenu" name="FileMenu">
     <property name="title">
-     <string> Файл</string>
+     <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="OpenAction"/>
    </widget>
-   <addaction name="menuFile"/>
+   <addaction name="FileMenu"/>
   </widget>
-  <action name="actionOpen">
+  <action name="OpenAction">
    <property name="text">
-    <string>Открыть</string>
+    <string>Open</string>
    </property>
   </action>
  </widget>
