@@ -1,2 +1,2 @@
-Pillow==9.2.0
-PyQt5==5.15.7
+PyQt6==6.4.0
+darkdetect==0.7.1

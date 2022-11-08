@@ -1,19 +1,32 @@
 import sys
 
-from PyQt6 import QtWidgets
+import resources.themes.themes
+
 from PyQt6.QtCore import QFile, QTextStream
+from PyQt6.QtWidgets import QApplication
+import darkdetect
 
-from gui import MainWindow
+from screens.MainWindow import MainWindow
 
 
-app = QtWidgets.QApplication([])  # Создание объекта нового приложения
+def set_theme(app: QApplication) -> None:
+    file = QFile(':/theme/{}/stylesheet.qss'
+            .format('dark' if darkdetect.isDark() else 'light'))
+    file.open(QFile.OpenModeFlag.ReadOnly | QFile.OpenModeFlag.Text)
+    stream = QTextStream(file)
+    app.setStyleSheet(stream.readAll())
 
-# file = QFile("theme/stylesheet.qss")  # Объект предостовляющий интерфейс для работы с файлом
-# file.open(QFile.ReadOnly | QFile.Text)  # Открытие файла
-# stream = QTextStream(file)  # Создал объект потока файла
-# app.setStyleSheet(stream.readAll())  # Указание таблицы стилей
 
-main_window = MainWindow.MainWindow()  # Создание объекта главного окна
-main_window.show()  # Вывод окна на экран
+def start_application() -> None:
+    app = QApplication(sys.argv)
 
-sys.exit(app.exec())  # Выход из приложения
+    set_theme(app)
+
+    window = MainWindow()
+    window.show()
+
+    sys.exit(app.exec())
+
+
+if __name__ == '__main__':
+    start_application()
