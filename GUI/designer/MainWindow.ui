@@ -6,43 +6,187 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>575</width>
-    <height>420</height>
+    <width>720</width>
+    <height>440</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>720</width>
+    <height>440</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Hello world</string>
+   <string/>
   </property>
-  <property name="toolButtonStyle">
-   <enum>Qt::ToolButtonIconOnly</enum>
-  </property>
-  <property name="documentMode">
-   <bool>false</bool>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <property name="unifiedTitleAndToolBarOnMac">
    <bool>true</bool>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
-  <widget class="QMenuBar" name="menuBar">
+  <widget class="QWidget" name="CentralContentWidget">
+   <layout class="QHBoxLayout" name="CentralContentWidgetLayout">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="QWidget" name="LeftColumnWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>1</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QGridLayout" name="gridLayout" rowstretch="0" columnstretch="1,1,1">
+       <property name="leftMargin">
+        <number>9</number>
+       </property>
+       <property name="topMargin">
+        <number>9</number>
+       </property>
+       <property name="rightMargin">
+        <number>9</number>
+       </property>
+       <property name="bottomMargin">
+        <number>9</number>
+       </property>
+       <property name="spacing">
+        <number>5</number>
+       </property>
+       <item row="0" column="2">
+        <spacer name="VerticalSpacerRight">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="0">
+        <spacer name="VerticalSpacerLeft">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1">
+        <spacer name="VerticalSpacerMiddle">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="RightColumnWidget" native="true">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>1</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <layout class="QVBoxLayout" name="RightColumnWidgetLayout">
+       <item>
+        <widget class="QGraphicsView" name="FilePreviewGraphicsView">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="FileInfoGroupBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>1</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="title">
+          <string>File info</string>
+         </property>
+         <layout class="QFormLayout" name="FileInfoGroupBoxLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="TitleFileNameLabel">
+            <property name="text">
+             <string>Filename:</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="FileNameLabel">
+            <property name="text">
+             <string/>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="MenuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>575</width>
+     <width>720</width>
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
+   <widget class="QMenu" name="FileMenu">
     <property name="title">
-     <string> Файл</string>
+     <string>File</string>
     </property>
-    <addaction name="actionOpen"/>
+    <addaction name="OpenAction"/>
+    <addaction name="CloseAction"/>
    </widget>
-   <addaction name="menuFile"/>
+   <addaction name="FileMenu"/>
   </widget>
-  <action name="actionOpen">
+  <action name="OpenAction">
    <property name="text">
-    <string>Открыть</string>
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="CloseAction">
+   <property name="text">
+    <string>Close</string>
    </property>
   </action>
  </widget>
