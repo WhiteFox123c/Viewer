@@ -7,12 +7,13 @@ from GUI.Ui_MainWindow import Ui_MainWindow
 from screens.LibraryChooseDialog import LibraryChooseDialog
 from config.GalleryConfig import GalleryConfig
 
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     """Main application gallery window"""
 
     DEFAULT_WINDOW_TITLE: str = 'Empty gallery'
 
-    directory_path: str|None = None
+    directory_path: str | None = None
 
     def __init__(self, parent=None) -> None:
         """Setup UI objects and window settings"""
@@ -27,7 +28,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         if not self.__is_saved_dir_path():
             dialog_result = self.__open_ask_gallery_path_dialog()
-            if dialog_result['accepted'] == True:
+            if dialog_result['accepted']:
                 self.__open_path(dialog_result['path'])
         else:
             self.__open_path(self.__get_saved_dir_path())
@@ -52,7 +53,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSlot(name='on_OpenAction_triggered')
     def __openAction_triggered(self):
         dialog_result = self.__open_ask_gallery_path_dialog()
-        if dialog_result['accepted'] == True:
+        if dialog_result['accepted']:
             self.__open_path(dialog_result['path'])
 
     def __open_ask_gallery_path_dialog(self) -> dict:
@@ -68,10 +69,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __set_directory_path(self, directory_path) -> None:
         """Set directory path and window title according to it"""
         self.directory_path = directory_path
-        self.setWindowTitle(self.DEFAULT_WINDOW_TITLE if directory_path == None else directory_path)
+        self.setWindowTitle(self.DEFAULT_WINDOW_TITLE if directory_path is None else directory_path)
 
         with open(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}', 'w+') as file:
-            file.write('' if directory_path == None else directory_path)
+            file.write('' if directory_path is None else directory_path)
 
     def __chosen_dir_incorrect(self, directory_path):
         message_box = QMessageBox(self)
@@ -89,5 +90,5 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.__set_directory_path(directory_path)
         with os.scandir(self.directory_path) as _:
             for entry in _:
-                if (entry.is_file and entry.name.endswith(GalleryConfig.IMAGES_EXT)):
+                if entry.is_file and entry.name.endswith(GalleryConfig.IMAGES_EXT):
                     pass

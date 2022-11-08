@@ -2,8 +2,8 @@ from PyQt6 import QtWidgets
 from PyQt6.QtWidgets import QDialog
 from PyQt6.QtCore import pyqtSlot
 
-
 from GUI.Ui_LibraryChooseDialog import Ui_LibraryChooseDialog
+
 
 class LibraryChooseDialog(QDialog, Ui_LibraryChooseDialog):
     """Dialog window to asking user for gallery path"""
