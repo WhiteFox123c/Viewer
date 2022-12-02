@@ -1,7 +1,8 @@
 import os
 
-from PyQt6.QtWidgets import QMainWindow, QMessageBox
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QLabel
 from PyQt6.QtCore import pyqtSlot
+from PyQt6.QtGui import QPixmap
 
 from GUI.Ui_MainWindow import Ui_MainWindow
 from screens.LibraryChooseDialog import LibraryChooseDialog
@@ -14,6 +15,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     DEFAULT_WINDOW_TITLE: str = 'Empty gallery'
 
     directory_path: str | None = None
+
+    thumbnail_widgets: list = list()
 
     def __init__(self, parent=None) -> None:
         """Setup UI objects and window settings"""
@@ -38,6 +41,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """Closing opened directory and show an empty gallery"""
         self.__set_directory_path(None)
 
+    @pyqtSlot(name='on_RefreshAction_triggered')
+    def __refreshAction_trigerred(self) -> None:
+        """Refreshing list of images according to directory"""
+        self.__set_directory_path(self.directory_path)
+        self.__create_thumbnails()
+
     def __is_saved_dir_path(self) -> bool:
         """Returns true if the path to the gallery directory was saved at the last launch"""
         if os.path.isfile(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}') and len(self.__get_saved_dir_path()) > 0:
@@ -45,7 +54,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         return False
 
-    def __get_saved_dir_path(self) -> str:
+    @staticmethod
+    def __get_saved_dir_path() -> str:
         """Returns first line from SAVE_GALLERY_PATH file"""
         with open(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}', 'r') as file:
             return file.readline()
@@ -68,6 +78,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __set_directory_path(self, directory_path) -> None:
         """Set directory path and window title according to it"""
+        for widget in self.thumbnail_widgets:
+            self.ThumbnailAreaLayout.removeWidget(widget)
+
+        self.thumbnail_widgets = list()
         self.directory_path = directory_path
         self.setWindowTitle(self.DEFAULT_WINDOW_TITLE if directory_path is None else directory_path)
 
@@ -77,7 +91,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __chosen_dir_incorrect(self, directory_path):
         message_box = QMessageBox(self)
         message_box.setWindowTitle('Error')
-        message_box.setText(f'The gallery folder you specified does not look like a real existing folder\n\n{directory_path}')
+        message_box.setText(
+            f'The gallery folder you specified does not look like a real existing folder\n\n{directory_path}')
         message_box.setIcon(QMessageBox.Icon.Critical)
         message_box.exec()
 
@@ -88,7 +103,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             return
 
         self.__set_directory_path(directory_path)
+        self.__create_thumbnails()
+
+    def __create_thumbnails(self):
         with os.scandir(self.directory_path) as _:
             for entry in _:
                 if entry.is_file and entry.name.endswith(GalleryConfig.IMAGES_EXT):
-                    pass
+                    label = QLabel('', parent=self)
+                    label.setPixmap(QPixmap(entry.path).scaledToWidth(int(self.ThumbnailArea.width() / 3 - 12)))
+                    self.thumbnail_widgets.append(label)
+                    self.ThumbnailAreaLayout.addWidget(label)
+            if len(self.thumbnail_widgets) % 3 != 0:
+                for i in range(0, 3 - len(self.thumbnail_widgets) % 3):
+                    __ = QLabel('', parent=self)
+                    self.ThumbnailAreaLayout.addWidget(__)
+                    self.ThumbnailAreaLayout.removeWidget(__)
+
