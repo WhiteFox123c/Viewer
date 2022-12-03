@@ -1,10 +1,11 @@
 import os
 
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QLabel
-from PyQt6.QtCore import pyqtSlot
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QLabel, QToolButton
+from PyQt6.QtCore import pyqtSlot, QSize
+from PyQt6.QtGui import QPixmap, QIcon
 
 from GUI.Ui_MainWindow import Ui_MainWindow
+from GUI.templates.Thumbnail import Thumbnail
 from screens.LibraryChooseDialog import LibraryChooseDialog
 from config.GalleryConfig import GalleryConfig
 
@@ -52,6 +53,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         dialog_result = self.__open_ask_gallery_path_dialog()
         if dialog_result['accepted']:
             self.__open_path(dialog_result['path'])
+
+    @pyqtSlot(name='on_Thumbnail_triggered')
+    def __thumbnail_triggered(self):
+        print('123')
+
 
     def __is_saved_dir_path(self) -> bool:
         """Returns true if the path to the gallery directory was saved at the last launch"""
@@ -108,10 +114,15 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with os.scandir(self.directory_path) as _:
             for entry in _:
                 if entry.is_file and entry.name.endswith(GalleryConfig.IMAGES_EXT):
-                    thumbnail = QLabel('', parent=self)
-                    thumbnail.setPixmap(QPixmap(entry.path).scaledToWidth(int(self.ThumbnailArea.width() / 3 - 12)))
+                    width = int(self.ThumbnailArea.width() / 3 - 12)
+                    height = QPixmap(entry.path).scaledToWidth(int(self.ThumbnailArea.width() / 3 - 12)).height()
+
+                    thumbnail = Thumbnail()
+
+                    thumbnail.create_thumbnail(QSize(width, height), entry.path)
                     self.thumbnail_widgets.append(thumbnail)
                     self.ThumbnailAreaLayout.addWidget(thumbnail)
+
             if len(self.thumbnail_widgets) % 3 != 0:
                 for i in range(0, 3 - len(self.thumbnail_widgets) % 3):
                     thumbnail = QLabel('', parent=self)
