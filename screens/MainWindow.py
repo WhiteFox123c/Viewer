@@ -47,6 +47,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.__set_directory_path(self.directory_path)
         self.__create_thumbnails()
 
+    @pyqtSlot(name='on_OpenAction_triggered')
+    def __openAction_triggered(self):
+        dialog_result = self.__open_ask_gallery_path_dialog()
+        if dialog_result['accepted']:
+            self.__open_path(dialog_result['path'])
+
     def __is_saved_dir_path(self) -> bool:
         """Returns true if the path to the gallery directory was saved at the last launch"""
         if os.path.isfile(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}') and len(self.__get_saved_dir_path()) > 0:
@@ -60,12 +66,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with open(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}', 'r') as file:
             return file.readline()
 
-    @pyqtSlot(name='on_OpenAction_triggered')
-    def __openAction_triggered(self):
-        dialog_result = self.__open_ask_gallery_path_dialog()
-        if dialog_result['accepted']:
-            self.__open_path(dialog_result['path'])
-
     def __open_ask_gallery_path_dialog(self) -> dict:
         """Ask user to select a gallery path"""
         dialog = LibraryChooseDialog(self)
@@ -78,8 +78,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __set_directory_path(self, directory_path) -> None:
         """Set directory path and window title according to it"""
-        for widget in self.thumbnail_widgets:
-            self.ThumbnailAreaLayout.removeWidget(widget)
+        self.__clear_thumbnail_area()
 
         self.thumbnail_widgets = list()
         self.directory_path = directory_path
@@ -109,13 +108,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with os.scandir(self.directory_path) as _:
             for entry in _:
                 if entry.is_file and entry.name.endswith(GalleryConfig.IMAGES_EXT):
-                    label = QLabel('', parent=self)
-                    label.setPixmap(QPixmap(entry.path).scaledToWidth(int(self.ThumbnailArea.width() / 3 - 12)))
-                    self.thumbnail_widgets.append(label)
-                    self.ThumbnailAreaLayout.addWidget(label)
+                    thumbnail = QLabel('', parent=self)
+                    thumbnail.setPixmap(QPixmap(entry.path).scaledToWidth(int(self.ThumbnailArea.width() / 3 - 12)))
+                    self.thumbnail_widgets.append(thumbnail)
+                    self.ThumbnailAreaLayout.addWidget(thumbnail)
             if len(self.thumbnail_widgets) % 3 != 0:
                 for i in range(0, 3 - len(self.thumbnail_widgets) % 3):
-                    __ = QLabel('', parent=self)
-                    self.ThumbnailAreaLayout.addWidget(__)
-                    self.ThumbnailAreaLayout.removeWidget(__)
+                    thumbnail = QLabel('', parent=self)
+                    self.ThumbnailAreaLayout.addWidget(thumbnail)
+                    self.ThumbnailAreaLayout.removeWidget(thumbnail)
 
+    def __clear_thumbnail_area(self):
+        for widget in self.thumbnail_widgets:
+            self.ThumbnailAreaLayout.removeWidget(widget)
