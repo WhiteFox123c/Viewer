@@ -22,6 +22,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     resized = pyqtSignal()
 
+    preview_pixmap: QPixmap | None = None
+
     def __init__(self, parent=None) -> None:
         """Setup UI objects and window settings"""
         super().__init__(parent)
@@ -42,6 +44,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__open_path(self.__get_saved_dir_path())
 
     def __resized(self):
+        self.__show_preview()
+
         for thumbnail in self.thumbnail_widgets:
             thumbnail.setScaledIcon(self.__get_thumbnail_width())
 
@@ -49,12 +53,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __closeAction_triggered(self) -> None:
         """Closing opened directory and show an empty gallery"""
         self.__set_directory_path(None)
-        self.__show_info_for()
+        self.__show_preview()
 
     @pyqtSlot(name='on_RefreshAction_triggered')
     def __refreshAction_trigerred(self) -> None:
         """Refreshing list of images according to directory"""
-        self.__show_info_for()
+        self.__show_preview()
         self.__set_directory_path(self.directory_path)
         self.__create_thumbnails()
 
@@ -64,19 +68,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if dialog_result['accepted']:
             self.__open_path(dialog_result['path'])
 
-    def __show_info_for(self):
+    def __show_preview(self):
         if not isinstance(self.sender(), Thumbnail):
             self.PreviewLabel.setText('Preview')
+            if self.preview_pixmap is not None:
+                self.__set_preview(self.preview_pixmap)
         else:
-            pixmap = self.sender().pixmap
-            preview: QPixmap
+            self.preview_pixmap = self.sender().pixmap
+            self.__set_preview(self.preview_pixmap)
 
-            if pixmap.width() > pixmap.height():
-                preview = pixmap.scaledToWidth(self.PreviewLabel.width())
-            else:
-                preview = pixmap.scaledToHeight(self.PreviewLabel.height())
+    def __set_preview(self, pixmap: QPixmap):
+        if pixmap.width() > pixmap.height():
+            preview = pixmap.scaledToWidth(self.PreviewLabel.width())
+        else:
+            preview = pixmap.scaledToHeight(self.PreviewLabel.height())
 
-            self.PreviewLabel.setPixmap(preview)
+        self.PreviewLabel.setPixmap(preview)
 
     def __is_saved_dir_path(self) -> bool:
         """Returns true if the path to the gallery directory was saved at the last launch"""
@@ -147,7 +154,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         for entry in image_entries:
             thumbnail = Thumbnail(self, entry.path, self.__get_thumbnail_width())
-            thumbnail.clicked.connect(self.__show_info_for)
+            thumbnail.clicked.connect(self.__show_preview)
 
             self.thumbnail_widgets.append(thumbnail)
             self.ThumbnailAreaLayout.addWidget(thumbnail)
