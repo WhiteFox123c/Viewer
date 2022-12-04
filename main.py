@@ -24,6 +24,7 @@ def start_application() -> None:
 
     window = MainWindow()
     window.show()
+    window.post_initialize()
 
     sys.exit(app.exec())
 

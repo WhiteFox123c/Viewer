@@ -1,8 +1,9 @@
+import math
 import os
 
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QLabel, QToolButton
-from PyQt6.QtCore import pyqtSlot, QSize
-from PyQt6.QtGui import QPixmap, QIcon
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QLabel, QToolButton, QProgressBar
+from PyQt6.QtCore import pyqtSlot, QSize, pyqtSignal
+from PyQt6.QtGui import QPixmap
 
 from GUI.Ui_MainWindow import Ui_MainWindow
 from GUI.templates.Thumbnail import Thumbnail
@@ -19,17 +20,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     thumbnail_widgets: list = list()
 
+    resized = pyqtSignal()
+
     def __init__(self, parent=None) -> None:
         """Setup UI objects and window settings"""
         super().__init__(parent)
-
         self.setupUi(self)
+        self.resized.connect(self.__resized)
         self.setWindowTitle(self.DEFAULT_WINDOW_TITLE)
 
-    def show(self) -> None:
-        """Override default show method to check for saved gallery path"""
-        super().show()
+    def resizeEvent(self, event):
+        self.resized.emit()
+        return super().resizeEvent(event)
 
+    def post_initialize(self) -> None:
         if not self.__is_saved_dir_path():
             dialog_result = self.__open_ask_gallery_path_dialog()
             if dialog_result['accepted']:
@@ -37,14 +41,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.__open_path(self.__get_saved_dir_path())
 
+    def __resized(self):
+        for thumbnail in self.thumbnail_widgets:
+            thumbnail.setScaledIcon(self.__get_thumbnail_width())
+
     @pyqtSlot(name='on_CloseAction_triggered')
     def __closeAction_triggered(self) -> None:
         """Closing opened directory and show an empty gallery"""
         self.__set_directory_path(None)
+        self.__show_info_for()
 
     @pyqtSlot(name='on_RefreshAction_triggered')
     def __refreshAction_trigerred(self) -> None:
         """Refreshing list of images according to directory"""
+        self.__show_info_for()
         self.__set_directory_path(self.directory_path)
         self.__create_thumbnails()
 
@@ -54,10 +64,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if dialog_result['accepted']:
             self.__open_path(dialog_result['path'])
 
-    @pyqtSlot(name='on_Thumbnail_triggered')
-    def __thumbnail_triggered(self):
-        print('123')
+    def __show_info_for(self):
+        if not isinstance(self.sender(), Thumbnail):
+            self.PreviewLabel.setText('Preview')
+        else:
+            pixmap = self.sender().pixmap
+            preview: QPixmap
 
+            if pixmap.width() > pixmap.height():
+                preview = pixmap.scaledToWidth(self.PreviewLabel.width())
+            else:
+                preview = pixmap.scaledToHeight(self.PreviewLabel.height())
+
+            self.PreviewLabel.setPixmap(preview)
 
     def __is_saved_dir_path(self) -> bool:
         """Returns true if the path to the gallery directory was saved at the last launch"""
@@ -110,24 +129,38 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.__set_directory_path(directory_path)
         self.__create_thumbnails()
 
+    def __get_thumbnail_width(self) -> int:
+        return int(self.ThumbnailArea.width() / 3 - 12)
+
     def __create_thumbnails(self):
+        progress_bar = QProgressBar()
+        self.StatusBar.addWidget(progress_bar)
+        image_entries = list()
+
         with os.scandir(self.directory_path) as _:
             for entry in _:
                 if entry.is_file and entry.name.endswith(GalleryConfig.IMAGES_EXT):
-                    width = int(self.ThumbnailArea.width() / 3 - 12)
-                    height = QPixmap(entry.path).scaledToWidth(int(self.ThumbnailArea.width() / 3 - 12)).height()
+                    image_entries.append(entry)
 
-                    thumbnail = Thumbnail()
+        progress_bar.setMaximum(len(image_entries))
+        progress_bar.setValue(0)
 
-                    thumbnail.create_thumbnail(QSize(width, height), entry.path)
-                    self.thumbnail_widgets.append(thumbnail)
-                    self.ThumbnailAreaLayout.addWidget(thumbnail)
+        for entry in image_entries:
+            thumbnail = Thumbnail(self, entry.path, self.__get_thumbnail_width())
+            thumbnail.clicked.connect(self.__show_info_for)
 
-            if len(self.thumbnail_widgets) % 3 != 0:
-                for i in range(0, 3 - len(self.thumbnail_widgets) % 3):
-                    thumbnail = QLabel('', parent=self)
-                    self.ThumbnailAreaLayout.addWidget(thumbnail)
-                    self.ThumbnailAreaLayout.removeWidget(thumbnail)
+            self.thumbnail_widgets.append(thumbnail)
+            self.ThumbnailAreaLayout.addWidget(thumbnail)
+            progress_bar.setValue(progress_bar.value() + 1)
+
+        self.StatusBar.removeWidget(progress_bar)
+
+        # Перенесення рядка в гріді
+        if len(self.thumbnail_widgets) % 3 != 0:
+            for i in range(0, 3 - len(self.thumbnail_widgets) % 3):
+                thumbnail = QLabel('', parent=self)
+                self.ThumbnailAreaLayout.addWidget(thumbnail)
+                self.ThumbnailAreaLayout.removeWidget(thumbnail)
 
     def __clear_thumbnail_area(self):
         for widget in self.thumbnail_widgets:

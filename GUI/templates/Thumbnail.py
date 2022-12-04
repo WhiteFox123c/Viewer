@@ -4,21 +4,19 @@ from PyQt6.QtWidgets import QToolButton
 
 
 class Thumbnail(QToolButton):
-    origin_path = None
-    size: QSize
 
-    def __init(self, parent):
+    origin_path: str
+    pixmap: QPixmap
+
+    def __init__(self, parent, path, width):
         super().__init__(parent)
-
-    def create_thumbnail(self, size: QSize, path):
-        self.setFixedSize(size)
-        self.setIconSize(size)
-        self.setIcon(QIcon(QPixmap(path).scaledToWidth(size.width())))
-        self.setOriginPath(path)
-
-    def setSize(self, size: QSize):
-        self.size = size
-
-    def setOriginPath(self, path):
+        self.pixmap = QPixmap(path)
+        self.setScaledIcon(width)
         self.origin_path = path
 
+    def setScaledIcon(self, width):
+        scaled_pixmap = self.pixmap.scaledToWidth(width)
+        size = QSize(width, scaled_pixmap.height())
+        self.setFixedSize(size)
+        self.setIconSize(size)
+        self.setIcon(QIcon(scaled_pixmap))
