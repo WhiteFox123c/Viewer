@@ -114,6 +114,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             preview = pixmap.scaledToHeight(label_size['height'])
 
+        if preview.height() > label_size['height']:
+            preview = pixmap.scaledToHeight(label_size['height'])
+        elif preview.width() > label_size['width']:
+            preview = pixmap.scaledToWidth(label_size['width'])
+
         self.PreviewLabel.setPixmap(preview)
 
     def __is_saved_dir_path(self) -> bool:
