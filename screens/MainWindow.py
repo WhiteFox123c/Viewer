@@ -22,7 +22,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     resized = pyqtSignal()
 
-    preview_pixmap: QPixmap | None = None
+    preview_thumbnail: Thumbnail | None = None
 
     def __init__(self, parent=None) -> None:
         """Setup UI objects and window settings"""
@@ -60,8 +60,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     @pyqtSlot(name='on_RefreshAction_triggered')
     def __refreshAction_trigerred(self) -> None:
         """Refreshing list of images according to directory"""
-        self.__show_preview()
         self.__set_directory_path(self.directory_path)
+        self.__show_preview()
         self.__create_thumbnails()
 
     @pyqtSlot(name='on_OpenAction_triggered')
@@ -73,15 +73,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __show_preview(self):
         if not isinstance(self.sender(), Thumbnail):
             self.PreviewLabel.setText('Preview')
-            self.FileNameLabel.setText('File Name')
-            if self.preview_pixmap is not None:
-                self.__set_preview(self.preview_pixmap)
+            self.set_pixmap_info()
+
+            if self.preview_thumbnail is not None:
+                self.__set_preview(self.preview_thumbnail.pixmap)
+                self.set_pixmap_info(self.preview_thumbnail)
         else:
-            self.preview_pixmap = self.sender().pixmap
-            self.__set_preview(self.preview_pixmap)
-            self.__resize_thumbnails()
-            self.FileNameLabel.setText(os.path.basename(self.sender().origin_path))
-            self.ResolutionLabel.setText(str(self.sender().pixmap.width()) + " x " + str(self.sender().pixmap.height()))
+            self.preview_thumbnail = self.sender()
+            self.__set_preview(self.preview_thumbnail.pixmap)
+            self.set_pixmap_info(self.preview_thumbnail)
+
+        self.__resize_thumbnails()
+
+    def set_pixmap_info(self, thumbnail: Thumbnail | None = None):
+        file_name = ''
+        resolution = ''
+
+        if thumbnail is not None:
+            file_name = os.path.basename(thumbnail.origin_path)
+            if len(file_name) > 20:
+                file_name = file_name[0:15] + '...' + file_name.split('.')[-1]
+            resolution = f'{thumbnail.pixmap.width()}x{thumbnail.pixmap.height()}'
+
+        self.FileNameLabel.setText(file_name)
+        self.ResolutionLabel.setText(resolution)
 
     def __set_preview(self, pixmap: QPixmap):
         preview: QPixmap
@@ -126,7 +141,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.thumbnail_widgets = list()
         self.directory_path = directory_path
-        self.setWindowTitle(self.DEFAULT_WINDOW_TITLE if directory_path is None else directory_path)
+        self.setWindowTitle(
+            self.DEFAULT_WINDOW_TITLE if directory_path is None else directory_path)
+        self.preview_thumbnail = None
 
         with open(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}', 'w+') as file:
             file.write('' if directory_path is None else directory_path)
@@ -165,7 +182,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         progress_bar.setValue(0)
 
         for entry in image_entries:
-            thumbnail = Thumbnail(self, entry.path, self.__get_thumbnail_width())
+            thumbnail = Thumbnail(
+                self, entry.path, self.__get_thumbnail_width())
             thumbnail.clicked.connect(self.__show_preview)
 
             self.thumbnail_widgets.append(thumbnail)
