@@ -71,11 +71,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __show_preview(self):
         if not isinstance(self.sender(), Thumbnail):
             self.PreviewLabel.setText('Preview')
+            self.FileNameLabel.setText('File Name')
             if self.preview_pixmap is not None:
                 self.__set_preview(self.preview_pixmap)
         else:
             self.preview_pixmap = self.sender().pixmap
             self.__set_preview(self.preview_pixmap)
+            self.FileNameLabel.setText(os.path.basename(self.sender().origin_path))
+            self.ResolutionLabel.setText(str(self.sender().pixmap.width()) + " x " + str(self.sender().pixmap.height()))
 
     def __set_preview(self, pixmap: QPixmap):
         if pixmap.width() > pixmap.height():
