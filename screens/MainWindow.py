@@ -45,7 +45,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __resized(self):
         self.__show_preview()
+        self.__resize_thumbnails()
 
+    def __resize_thumbnails(self):
         for thumbnail in self.thumbnail_widgets:
             thumbnail.setScaledIcon(self.__get_thumbnail_width())
 
@@ -76,12 +78,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.preview_pixmap = self.sender().pixmap
             self.__set_preview(self.preview_pixmap)
+            self.__resize_thumbnails()
 
     def __set_preview(self, pixmap: QPixmap):
-        if pixmap.width() > pixmap.height():
-            preview = pixmap.scaledToWidth(self.PreviewLabel.width())
+        preview: QPixmap
+        label_size = {
+            'width': self.PreviewLabel.width(),
+            'height': self.PreviewLabel.height()
+        }
+
+        if label_size['width'] < label_size['height']:
+            preview = pixmap.scaledToWidth(label_size['width'])
         else:
-            preview = pixmap.scaledToHeight(self.PreviewLabel.height())
+            preview = pixmap.scaledToHeight(label_size['height'])
 
         self.PreviewLabel.setPixmap(preview)
 
@@ -114,7 +123,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.thumbnail_widgets = list()
         self.directory_path = directory_path
-        self.setWindowTitle(self.DEFAULT_WINDOW_TITLE if directory_path is None else directory_path)
+        self.setWindowTitle(
+            self.DEFAULT_WINDOW_TITLE if directory_path is None else directory_path)
 
         with open(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}', 'w+') as file:
             file.write('' if directory_path is None else directory_path)
@@ -153,7 +163,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         progress_bar.setValue(0)
 
         for entry in image_entries:
-            thumbnail = Thumbnail(self, entry.path, self.__get_thumbnail_width())
+            thumbnail = Thumbnail(
+                self, entry.path, self.__get_thumbnail_width())
             thumbnail.clicked.connect(self.__show_preview)
 
             self.thumbnail_widgets.append(thumbnail)
