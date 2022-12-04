@@ -45,7 +45,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def __resized(self):
         self.__show_preview()
+        self.__resize_thumbnails()
 
+    def __resize_thumbnails(self):
         for thumbnail in self.thumbnail_widgets:
             thumbnail.setScaledIcon(self.__get_thumbnail_width())
 
@@ -77,14 +79,21 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.preview_pixmap = self.sender().pixmap
             self.__set_preview(self.preview_pixmap)
+            self.__resize_thumbnails()
             self.FileNameLabel.setText(os.path.basename(self.sender().origin_path))
             self.ResolutionLabel.setText(str(self.sender().pixmap.width()) + " x " + str(self.sender().pixmap.height()))
 
     def __set_preview(self, pixmap: QPixmap):
-        if pixmap.width() > pixmap.height():
-            preview = pixmap.scaledToWidth(self.PreviewLabel.width())
+        preview: QPixmap
+        label_size = {
+            'width': self.PreviewLabel.width(),
+            'height': self.PreviewLabel.height()
+        }
+
+        if label_size['width'] < label_size['height']:
+            preview = pixmap.scaledToWidth(label_size['width'])
         else:
-            preview = pixmap.scaledToHeight(self.PreviewLabel.height())
+            preview = pixmap.scaledToHeight(label_size['height'])
 
         self.PreviewLabel.setPixmap(preview)
 
