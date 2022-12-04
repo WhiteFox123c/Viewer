@@ -3,7 +3,7 @@ import os
 
 from PyQt6.QtWidgets import QMainWindow, QMessageBox, QLabel, QToolButton, QProgressBar
 from PyQt6.QtCore import pyqtSlot, QSize, pyqtSignal
-from PyQt6.QtGui import QPixmap
+from PyQt6.QtGui import QPixmap, QIcon
 
 from GUI.Ui_MainWindow import Ui_MainWindow
 from GUI.templates.Thumbnail import Thumbnail
@@ -30,6 +30,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.resized.connect(self.__resized)
         self.setWindowTitle(self.DEFAULT_WINDOW_TITLE)
+        self.setWindowIcon(QIcon('C:/Users/WhiteFox/PycharmProjects/Viewer/resources/red-panda.png'))
 
     def resizeEvent(self, event):
         self.resized.emit()
