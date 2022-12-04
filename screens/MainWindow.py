@@ -30,7 +30,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         self.resized.connect(self.__resized)
         self.setWindowTitle(self.DEFAULT_WINDOW_TITLE)
-        self.setWindowIcon(QIcon('C:/Users/WhiteFox/PycharmProjects/Viewer/resources/red-panda.png'))
+        self.setWindowIcon(
+            QIcon('C:/Users/WhiteFox/PycharmProjects/Viewer/resources/red-panda.png'))
 
     def resizeEvent(self, event):
         self.resized.emit()
@@ -69,6 +70,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __openAction_triggered(self):
         dialog_result = self.__open_ask_gallery_path_dialog()
         if dialog_result['accepted']:
+            self.__set_directory_path(self.directory_path)
+            self.__show_preview()
             self.__open_path(dialog_result['path'])
 
     def __show_preview(self):
