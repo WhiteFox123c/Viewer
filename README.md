@@ -8,7 +8,7 @@ Run next commands to create virtual environment and install dependencies:
 
 ```sh
 # Windows
-./Script/install.bat
+Scripts\install.bat
 
 # Linux
 chmod +x ./Script/install.sh
