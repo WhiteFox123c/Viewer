@@ -17,7 +17,7 @@ chmod +x ./Script/install.sh
 
 ## Compile .ui files
 
-You can use `./Scripts/ui2py.bat` on Windows or `./Scripts/ui2py.sh` on Linux.
+You can use `Scripts\ui2py.bat` on Windows or `./Scripts/ui2py.sh` on Linux.
 
 Or use `pyuic6` from `pyqt6` package manually.
 
