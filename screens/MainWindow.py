@@ -6,7 +6,7 @@ from PyQt6.QtCore import pyqtSlot, QSize, pyqtSignal
 from PyQt6.QtGui import QPixmap, QIcon
 
 from GUI.Ui_MainWindow import Ui_MainWindow
-from GUI.templates.Thumbnail import Thumbnail
+from widgets.Thumbnail import Thumbnail
 from screens.LibraryChooseDialog import LibraryChooseDialog
 from config.GalleryConfig import GalleryConfig
 
