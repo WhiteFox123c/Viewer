@@ -229,7 +229,16 @@
     <addaction name="RefreshAction"/>
     <addaction name="CloseAction"/>
    </widget>
+   <widget class="QMenu" name="SortMenu">
+    <property name="title">
+     <string>Sort</string>
+    </property>
+    <addaction name="ByColorAction"/>
+    <addaction name="separator"/>
+    <addaction name="UnsortedAction"/>
+   </widget>
    <addaction name="FileMenu"/>
+   <addaction name="SortMenu"/>
   </widget>
   <widget class="QStatusBar" name="StatusBar"/>
   <action name="OpenAction">
@@ -245,6 +254,16 @@
   <action name="RefreshAction">
    <property name="text">
     <string>Refresh</string>
+   </property>
+  </action>
+  <action name="ByColorAction">
+   <property name="text">
+    <string>By Color</string>
+   </property>
+  </action>
+  <action name="UnsortedAction">
+   <property name="text">
+    <string>Unsorted</string>
    </property>
   </action>
  </widget>

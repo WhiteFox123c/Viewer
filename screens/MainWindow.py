@@ -18,9 +18,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     directory_path: str | None = None
 
-    thumbnail_widgets: list = list()
-
     resized = pyqtSignal()
+
+    thumbnail_lists: dict
 
     preview_thumbnail: Thumbnail | None = None
 
@@ -29,9 +29,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super().__init__(parent)
         self.setupUi(self)
         self.resized.connect(self.__resized)
+        self.resetThumbnailLists()
         self.setWindowTitle(self.DEFAULT_WINDOW_TITLE)
         self.setWindowIcon(
-            QIcon('C:/Users/WhiteFox/PycharmProjects/Viewer/resources/red-panda.png'))
+            QIcon(':/theme/icons/red-panda.png'))
+
+    def resetThumbnailLists(self):
+        self.thumbnail_lists = {
+            'original': list(),
+            'sortedByDominantColor': list()
+        }
 
     def resizeEvent(self, event):
         self.resized.emit()
@@ -39,18 +46,20 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def post_initialize(self) -> None:
         if not self.__is_saved_dir_path():
-            dialog_result = self.__open_ask_gallery_path_dialog()
-            if dialog_result['accepted']:
-                self.__open_path(dialog_result['path'])
+            dir_path = ""
         else:
-            self.__open_path(self.__get_saved_dir_path())
+            dir_path = self.__get_saved_dir_path()
+
+        dialog_result = self.__open_ask_gallery_path_dialog(dir_path)
+        if dialog_result['accepted']:
+            self.__open_path(dialog_result['path'])
 
     def __resized(self):
         self.__show_preview()
         self.__resize_thumbnails()
 
     def __resize_thumbnails(self):
-        for thumbnail in self.thumbnail_widgets:
+        for thumbnail in self.thumbnail_lists['original']:
             thumbnail.setScaledIcon(self.__get_thumbnail_width())
 
     @pyqtSlot(name='on_CloseAction_triggered')
@@ -73,6 +82,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.__set_directory_path(self.directory_path)
             self.__show_preview()
             self.__open_path(dialog_result['path'])
+
+    @pyqtSlot(name='on_ByColorAction_triggered')
+    def __byColorAction_triggered(self):
+        progress_bar = QProgressBar()
+        progress_bar.setMaximum(len(self.thumbnail_lists['original']))
+        progress_bar.setValue(0)
+        self.StatusBar.addWidget(progress_bar)
+
+        for thumbnail in self.thumbnail_lists['original']:
+            thumbnail.determineDominantColour()
+            progress_bar.setValue(progress_bar.value() + 1)
+
+        self.thumbnail_lists['sortedByDominantColour'] = self.thumbnail_lists['original'].copy()
+
+        self.__clear_thumbnail_area()
+        self.thumbnail_lists['sortedByDominantColour'].sort(key=lambda t: t.dominant_colour)
+        self.__render_thumbnails('sortedByDominantColour')
+
+        self.StatusBar.removeWidget(progress_bar)
+
+    @pyqtSlot(name='on_UnsortedAction_triggered')
+    def __unsortedAction_triggered(self):
+        self.__clear_thumbnail_area()
+        self.__render_thumbnails('original')
 
     def __show_preview(self):
         if not isinstance(self.sender(), Thumbnail):
@@ -97,7 +130,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             file_name = os.path.basename(thumbnail.origin_path)
             if len(file_name) > 20:
                 file_name = file_name[0:15] + '...' + file_name.split('.')[-1]
-            resolution = f'{thumbnail.pixmap.width()}x{thumbnail.pixmap.height()}'
+            resolution = f'{thumbnail.source_size.width()}x{thumbnail.source_size.height()}'
 
         self.FileNameLabel.setText(file_name)
         self.ResolutionLabel.setText(resolution)
@@ -134,9 +167,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         with open(f'{os.getcwd()}/{GalleryConfig.SAVE_GALLERY_PATH}', 'r') as file:
             return file.readline()
 
-    def __open_ask_gallery_path_dialog(self) -> dict:
+    def __open_ask_gallery_path_dialog(self, dir_path: str = "") -> dict:
         """Ask user to select a gallery path"""
-        dialog = LibraryChooseDialog(self)
+        dialog = LibraryChooseDialog(dir_path, self)
         dialog.exec()
 
         return {
@@ -147,8 +180,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __set_directory_path(self, directory_path) -> None:
         """Set directory path and window title according to it"""
         self.__clear_thumbnail_area()
+        self.resetThumbnailLists()
 
-        self.thumbnail_widgets = list()
         self.directory_path = directory_path
         self.setWindowTitle(
             self.DEFAULT_WINDOW_TITLE if directory_path is None else directory_path)
@@ -184,7 +217,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         with os.scandir(self.directory_path) as _:
             for entry in _:
-                if entry.is_file and entry.name.endswith(GalleryConfig.IMAGES_EXT):
+                if entry.is_file and entry.name.lower().endswith(GalleryConfig.IMAGES_EXT):
                     image_entries.append(entry)
 
         progress_bar.setMaximum(len(image_entries))
@@ -195,19 +228,24 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                 self, entry.path, self.__get_thumbnail_width())
             thumbnail.clicked.connect(self.__show_preview)
 
-            self.thumbnail_widgets.append(thumbnail)
-            self.ThumbnailAreaLayout.addWidget(thumbnail)
+            self.thumbnail_lists['original'].append(thumbnail)
             progress_bar.setValue(progress_bar.value() + 1)
 
         self.StatusBar.removeWidget(progress_bar)
+        self.__render_thumbnails()
 
-        # Перенесення рядка в гріді
-        if len(self.thumbnail_widgets) % 3 != 0:
-            for i in range(0, 3 - len(self.thumbnail_widgets) % 3):
+
+
+    def __clear_thumbnail_area(self):
+        for widget in self.thumbnail_lists['original']:
+            self.ThumbnailAreaLayout.removeWidget(widget)
+
+    def __render_thumbnails(self, list_name: str = 'original'):
+        for widget in self.thumbnail_lists[list_name]:
+            self.ThumbnailAreaLayout.addWidget(widget)
+            # Перенесення рядка в гріді
+        if len(self.thumbnail_lists[list_name]) % 3 != 0:
+            for i in range(0, 3 - len(self.thumbnail_lists[list_name]) % 3):
                 thumbnail = QLabel('', parent=self)
                 self.ThumbnailAreaLayout.addWidget(thumbnail)
                 self.ThumbnailAreaLayout.removeWidget(thumbnail)
-
-    def __clear_thumbnail_area(self):
-        for widget in self.thumbnail_widgets:
-            self.ThumbnailAreaLayout.removeWidget(widget)

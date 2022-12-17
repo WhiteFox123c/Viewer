@@ -10,10 +10,11 @@ class LibraryChooseDialog(QDialog, Ui_LibraryChooseDialog):
 
     directory_path: str = ''
 
-    def __init__(self, parent=None) -> None:
+    def __init__(self, dir_path: str, parent=None) -> None:
         """Setup UI objects and window settings"""
         super().__init__(parent)
         self.setupUi(self)
+        self.SelectedPathLineEdit.setText(dir_path)
 
     @pyqtSlot(str, name='on_SelectedPathLineEdit_textChanged')
     def __SelectedPathLineEdit_changed(self, text: str) -> None:
